@@ -1,16 +1,11 @@
-// hexagon hotend
-hotend_outer_diameter = 16;
-hotend_inner_diameter = 12;
-hotend_inner_height = 4.25;
-
-// hardware
-screw_size = 4;
-spring_screw_size = 4;
-carriage_screw_size = 4;
-screw_head_height = 4;
+// modules
+module_body_size = [50, 25, 10];
+module_body_chamfer = 2;
+module_bolt_size = 3;
+module_bolt_head_height = 3.5;
+module_mount_edge_offset = 5;
 
 // misc
-sensor_diameter = 18.75;
 layer_height = 0.3;
 tolerance = 0.1;
 pf = 0.1;  // preview fix for z-buffer tearing on cuts
