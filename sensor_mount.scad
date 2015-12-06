@@ -13,7 +13,7 @@ module main()
 {
     difference()
     {
-        ccube(module_body_size, module_body_chamfer, true);
+        ccube(module_body_size, body_chamfer, true);
         sensor_cutout();
         leveling_hardware_cutout();
     }

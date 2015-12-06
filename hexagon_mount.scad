@@ -62,7 +62,7 @@ module body()
 {
     difference()
     {
-        ccube(module_body_size, module_body_chamfer, true);
+        ccube(module_body_size, body_chamfer, true);
         hotend_cutout();
         clamp_hardware_cutout();
         leveling_hardware_cutout();
