@@ -125,7 +125,7 @@ module front_vents()
 {
 	rotate([90, 0, 0])
 	{
-		cylinder(d1=40, d2=hotend_fan_output, h=body_wall_thickness+pf, center=true);
+		cylinder(d1=45, d2=hotend_fan_output, h=body_wall_thickness+pf, center=true);
 	}
 	
 	vent_x = (body_size[0] - 2*body_wall_thickness - hotend_fan_output)/2 - 2;
