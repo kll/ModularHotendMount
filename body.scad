@@ -78,7 +78,7 @@ module top_cuts(inner_cut_size)
 	translate([0, 0, top_z_offset])
 	{
 		x = body_size[0]-2*body_wall_thickness;
-		y = module_level_bolt_spacing - 3*module_bolt_size;
+		y = module_level_bolt_spacing - module_level_spring_diameter - 2;
 		cube([x, y, top_z], true);
 	}
 	
@@ -106,7 +106,7 @@ module module_mount_holes()
 			z_offset = body_size[2]/2 - module_body_size[2]/2 - pf/2;
 			translate([x_offset, y_offset, z_offset])
 			{
-				polyhole(body_wall_thickness + pf, module_bolt_size);
+				polyhole(body_wall_thickness + pf, module_level_bolt_size);
 			}
 			
 			translate([x_offset, y_offset, z_offset])

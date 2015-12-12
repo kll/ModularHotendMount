@@ -49,17 +49,17 @@ module leveling_hardware_cutout()
             {
                 translate([cut_offset, 0, 0])
                 {
-                    nutTrap(module_bolt_size, module_mount_edge_offset, tolerance);
+                    nutTrap(module_clamp_bolt_size, module_mount_edge_offset, tolerance);
                 }
                 
                 translate([cut_offset, 0, -cut_length/2])
                 {
-                    polyhole(cut_length/2, module_bolt_size);
+                    polyhole(cut_length/2, module_clamp_bolt_size);
                 }
                 
-                translate([cut_offset, 0, METRIC_NUT_THICKNESS[module_bolt_size]/2 + pf/2 + layer_height])
+                translate([cut_offset, 0, METRIC_NUT_THICKNESS[module_clamp_bolt_size]/2 + pf/2 + layer_height])
                 {
-                    polyhole(cut_length/2, module_bolt_size);
+                    polyhole(cut_length/2, module_clamp_bolt_size);
                 }
                 
                 translate([cut_offset, 0, module_body_size[2]/4])
