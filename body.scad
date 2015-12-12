@@ -101,7 +101,7 @@ module module_mount_holes()
 	{
 		for (y=[-1:2:1])
 		{
-			x_offset = module_body_size[0]/2 * x;
+			x_offset = module_body_size[1]/2 * x;
 			y_offset = module_level_bolt_spacing/2 * y;
 			z_offset = 50/2 - 10/2;
 			translate([x_offset, y_offset, z_offset])
@@ -123,40 +123,38 @@ module front_cuts()
 
 module front_vents()
 {
-	rotate([90, 0, 0])
-	{
-		cylinder(d1=45, d2=hotend_fan_output, h=body_wall_thickness+pf, center=true);
-	}
 	
-	vent_x = (body_size[0] - 2*body_wall_thickness - hotend_fan_output)/2 - 2;
-	for(x=[-1:2:1])
+	vent_x = module_body_size[0] - 2;
+	x_offset = (body_size[0]/2)-(vent_x/2)-body_wall_thickness;
+	translate([x_offset, 0, 0])
 	{
-		x_offset = (body_size[0]/2)-(vent_x/2)-body_wall_thickness;
-		translate([x*x_offset, 0, 0])
-		{
-			cube([vent_x, body_wall_thickness+pf, body_size[2]-2*body_wall_thickness], center=true);
-		}
+		cube([vent_x, body_wall_thickness+pf, body_size[2]-2*body_wall_thickness], center=true);
 	}
 }
 
 module front_fan_mount()
 {
-	rotate([90, 0, 0])
+	translate([-module_body_size[0]/2, 0, 0])
 	{
-		for(r=[1:4])
+		rotate([90, 0, 0])
 		{
-			rotate([0,0,r*90])
+			cylinder(d1=45, d2=hotend_fan_output, h=body_wall_thickness+pf, center=true);
+			
+			for(r=[1:4])
 			{
-				translate([hotend_fan_screw_spacing/2, hotend_fan_screw_spacing/2,0])
+				rotate([0,0,r*90])
 				{
-					translate([0, 0, -(body_wall_thickness+pf)/2])
+					translate([hotend_fan_screw_spacing/2, hotend_fan_screw_spacing/2,0])
 					{
-						polyhole(body_wall_thickness+pf, hotend_fan_screw_size);
-					}
-					
-					rotate([0, 0, 225])
-					{
-						nutTrap(hotend_fan_screw_size, hotend_fan_screw_spacing/2, tolerance);
+						translate([0, 0, -(body_wall_thickness+pf)/2])
+						{
+							polyhole(body_wall_thickness+pf, hotend_fan_screw_size);
+						}
+						
+						rotate([0, 0, 225])
+						{
+							nutTrap(hotend_fan_screw_size, hotend_fan_screw_spacing/2, tolerance);
+						}
 					}
 				}
 			}

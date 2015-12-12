@@ -30,31 +30,37 @@ module sensor_cutout()
     nut_offset = module_body_size[2]/2 + sensor_nut_height/2 - sensor_nut_height + pf;
     translate([0, 0, nut_offset])
     {
-        cylinder(h=sensor_nut_height, d=METRIC_NUT_AC_WIDTHS[16], $fn=6, center=true);
+        rotate([0, 0, 90])
+        {
+            cylinder(h=sensor_nut_height, d=METRIC_NUT_AC_WIDTHS[16], $fn=6, center=true);
+        }
     }
 }
 
 module leveling_hardware_cutout()
 {
     cut_length = module_body_size[2] + pf;
-    cut_offset = module_body_size[0]/2 - module_mount_edge_offset;
-    for(x=[0:1])
+    cut_offset = module_body_size[1]/2 - module_mount_edge_offset;
+    rotate([0, 0, 90])
     {
-        rotate([0, 0, x*180])
+        for(y=[0:1])
         {
-            translate([cut_offset, 0, 0])
+            rotate([0, 0, y*180])
             {
-                nutTrap(module_bolt_size, module_mount_edge_offset, tolerance);
-            }
-            
-            translate([cut_offset, 0, -cut_length/2])
-            {
-                polyhole(cut_length/2, module_bolt_size);
-            }
-            
-            translate([cut_offset, 0, METRIC_NUT_THICKNESS[module_bolt_size]/2 + pf/2 + layer_height])
-            {
-                polyhole(cut_length/2, module_bolt_size);
+                translate([cut_offset, 0, 0])
+                {
+                    nutTrap(module_bolt_size, module_mount_edge_offset, tolerance);
+                }
+                
+                translate([cut_offset, 0, -cut_length/2])
+                {
+                    polyhole(cut_length/2, module_bolt_size);
+                }
+                
+                translate([cut_offset, 0, METRIC_NUT_THICKNESS[module_bolt_size]/2 + pf/2 + layer_height])
+                {
+                    polyhole(cut_length/2, module_bolt_size);
+                }
             }
         }
     }

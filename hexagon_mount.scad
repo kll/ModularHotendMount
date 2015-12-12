@@ -12,18 +12,19 @@ main(false);
 
 module main(print=true)
 {
-    rotate([print ? -90 : 0, 0, 0])
+    translate([print ? module_body_size[0]/2 : 0, 0, print ? module_body_size[0]/2 : 0])
     {
-        translate([0, 0, print ? module_body_size[2] : 0])
+        rotate([0, print ? 90 : 0, 0])
         {
             split_body_1();
         }
     }
 
-    rotate([print ? 90 : 0, 0, 0])
+    translate([print ? -module_body_size[0]/2 : 0, 0, print ? module_body_size[0]/2 : 0])
     {
-        translate([0, 0, print ? module_body_size[2] : 0])
+        rotate([0, print ? -90 : 0, 0])
         {
+        
             split_body_2();
         }
     }
@@ -34,7 +35,7 @@ module split_body_1()
     difference()
     {
         body();
-        translate([0, -module_body_size[1]/2, 0])
+        translate([-module_body_size[0]/2, 0, 0])
         {
             slice();
         }
@@ -46,7 +47,7 @@ module split_body_2()
     difference()
     {
         body();
-        translate([0, module_body_size[1]/2, 0])
+        translate([module_body_size[0]/2, 0, 0])
         {
             slice();
         }
@@ -55,7 +56,7 @@ module split_body_2()
 
 module slice()
 {
-    cube([module_body_size[0] + pf, module_body_size[1], module_body_size[2]+pf], true);
+    cube([module_body_size[0], module_body_size[1] + pf, module_body_size[2] + pf], true);
 }
 
 module body()
@@ -88,50 +89,47 @@ module hotend_cutout()
 module clamp_hardware_cutout()
 {
     cut_length = module_body_size[1] + pf;
-    cut_offset = hotend_outer_diameter/2 + module_bolt_size;
-    for(x=[0:1])
+    y_offset = hotend_outer_diameter/2 + module_bolt_size;
+    nut_x_offset = module_body_size[0]/2 - module_mount_edge_offset;
+    for(y=[0:1])
     {
-        translate([0, module_body_size[1]/2 - module_mount_edge_offset, 0])
+        translate([nut_x_offset, 0, 0])
         {
-            rotate([90, 0, 0])
+            rotate([0, -90, 0])
             {
-                rotate([0, 0, 90])
+                rotate([y*180, 0, 0])
                 {
-                    rotate([x*180, 0, 0])
+                    translate([0, y_offset, 0])
                     {
-                        translate([0, cut_offset, 0])
-                        {
-                            nutTrap(module_bolt_size, module_body_size[2]/2, tolerance);
-                        }
+                        nutTrap(module_bolt_size, module_body_size[2]/2, tolerance);
                     }
                 }
             }
         }
         
-        rotate([90, 0, 0])
+        rotate([0, -90, 0])
         {
-            rotate([0,0,x*180])
+            rotate([0, 0, y*180])
             {
-                partial_cut_head_length = cut_length/2 - module_bolt_head_height;
-                translate([cut_offset, 0, -layer_height])
+                // bolt head
+                translate([0, y_offset, module_body_size[0]/2 - module_bolt_head_height])
                 {
-                    polyhole(partial_cut_head_length, module_bolt_size);
-                }
-           
-                translate([cut_offset, 0, module_body_size[1]/2 - module_bolt_head_height + pf])
-                {
-                    polyhole(module_bolt_head_height, METRIC_NUT_AC_WIDTHS[module_bolt_size]);
+                    polyhole(module_bolt_head_height + pf, METRIC_NUT_AC_WIDTHS[module_bolt_size]);
                 }
                 
-                partial_cut_nut_length = cut_length/2 - module_mount_edge_offset - METRIC_NUT_THICKNESS[module_bolt_size]/2 - pf - layer_height;
-                translate([cut_offset, 0, -partial_cut_nut_length])
+                // partial span from one layer height away from the bolt head cutout to one layer height away from the nut cutout
+                partial_cut_length = module_body_size[0] - module_bolt_head_height - module_mount_edge_offset - METRIC_NUT_THICKNESS[module_bolt_size]/2 - tolerance/2 - 2*layer_height;
+                partial_cut_offset = nut_x_offset + METRIC_NUT_THICKNESS[module_bolt_size]/2 - partial_cut_length;
+                translate([0, y_offset, partial_cut_offset])
                 {
-                    polyhole(partial_cut_nut_length, module_bolt_size);
+                    polyhole(partial_cut_length, module_bolt_size);
                 }
                 
-                translate([cut_offset, 0, -(module_body_size[1]/2 + pf)])
+                // nut side exit hole
+                nut_side_exit_length = module_mount_edge_offset - METRIC_NUT_THICKNESS[module_bolt_size]/2 - tolerance/2 + pf;
+                translate([0, y_offset, -(module_body_size[0]/2) - pf/2])
                 {
-                    polyhole(module_mount_edge_offset, module_bolt_size);
+                    polyhole(nut_side_exit_length, module_bolt_size);
                 }
             }
         }
@@ -141,19 +139,22 @@ module clamp_hardware_cutout()
 module leveling_hardware_cutout()
 {
     cut_length = module_body_size[2] + pf;
-    cut_offset = module_body_size[0]/2 - module_mount_edge_offset;
-    for(x=[0:1])
+    cut_offset = module_body_size[1]/2 - module_mount_edge_offset;
+    rotate([0, 0, 90])
     {
-        rotate([0, 0, x*180])
+        for(y=[0:1])
         {
-            translate([cut_offset, 0, 0])
+            rotate([0, 0, y*180])
             {
-                nutTrap(module_bolt_size, module_mount_edge_offset, tolerance);
-            }
-            
-            translate([cut_offset, 0, -cut_length/2])
-            {
-                polyhole(cut_length, module_bolt_size);
+                translate([cut_offset, 0, 0])
+                {
+                    nutTrap(module_bolt_size, module_mount_edge_offset, tolerance);
+                }
+                
+                translate([cut_offset, 0, -cut_length/2])
+                {
+                    polyhole(cut_length, module_bolt_size);
+                }
             }
         }
     }
