@@ -83,6 +83,7 @@ module top_cuts(inner_cut_size)
 	}
 	
 	module_mount_holes();
+	module_wire_holes();
 }
 
 module bottom_cuts(inner_cut_size)
@@ -113,6 +114,19 @@ module module_mount_holes()
 			{
 				polyhole(body_wall_thickness*0.75, module_level_spring_diameter);
 			}
+		}
+	}
+}
+
+module module_wire_holes()
+{
+	for (x=[-1:2:1])
+	{
+		x_offset = module_body_size[0]/2 * x;
+		z_offset = body_size[2]/2 + body_wall_thickness/2 - module_body_size[2]/2;
+		translate([x_offset, 0, z_offset])
+		{
+			cube([module_body_size[0]/2, body_size[1] - 2*body_wall_thickness, body_wall_thickness + pf], true);
 		}
 	}
 }

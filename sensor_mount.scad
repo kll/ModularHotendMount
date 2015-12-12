@@ -16,6 +16,7 @@ module main()
         ccube(module_body_size, body_chamfer, true);
         sensor_cutout();
         leveling_hardware_cutout();
+        corner_cutout();
     }
 }
 
@@ -69,4 +70,23 @@ module leveling_hardware_cutout()
             }
         }
     }
+}
+
+module corner_cutout()
+{
+    for (x=[-1:2:1])
+	{
+		for (y=[-1:2:1])
+		{
+			x_offset = module_body_size[0]/2 * x;
+			y_offset = module_body_size[1]/2 * y;
+			translate([x_offset, y_offset, 0])
+			{
+				rotate([0, 0, 45])
+				{
+                    cube([module_body_size[0]/2.5 + pf, module_body_size[0]/2.5 + pf, module_body_size[2]+pf], true);
+                }
+			}
+		}
+	}
 }
