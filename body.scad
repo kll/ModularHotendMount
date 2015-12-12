@@ -103,11 +103,16 @@ module module_mount_holes()
 		{
 			x_offset = module_body_size[1]/2 * x;
 			y_offset = module_level_bolt_spacing/2 * y;
-			z_offset = 50/2 - 10/2;
+			z_offset = body_size[2]/2 - module_body_size[2]/2 - pf/2;
 			translate([x_offset, y_offset, z_offset])
 			{
-				polyhole(10, module_bolt_size);
-			}	
+				polyhole(body_wall_thickness + pf, module_bolt_size);
+			}
+			
+			translate([x_offset, y_offset, z_offset])
+			{
+				polyhole(body_wall_thickness*0.75, module_level_spring_diameter);
+			}
 		}
 	}
 }

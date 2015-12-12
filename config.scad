@@ -3,6 +3,7 @@ module_body_size = [25, 50, 10];
 module_bolt_size = 3;
 module_bolt_head_height = 3.5;
 module_mount_edge_offset = 5;
+module_level_spring_diameter = 8;
 module_level_bolt_spacing = module_body_size[1] - 2*module_mount_edge_offset;
 
 // main body

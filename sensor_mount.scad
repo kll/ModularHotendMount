@@ -61,6 +61,11 @@ module leveling_hardware_cutout()
                 {
                     polyhole(cut_length/2, module_bolt_size);
                 }
+                
+                translate([cut_offset, 0, module_body_size[2]/4])
+                {
+                    polyhole(module_body_size[2]/4 + pf, module_level_spring_diameter);
+                }
             }
         }
     }
