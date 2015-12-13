@@ -8,7 +8,7 @@ hotend_outer_diameter = 16;
 hotend_inner_diameter = 12;
 hotend_inner_height = 4.25;
 
-main(false);
+main(true);
 
 module main(print=true)
 {
@@ -120,7 +120,7 @@ module clamp_hardware_cutout()
                 
                 // partial span from one layer height away from the bolt head cutout to one layer height away from the nut cutout
                 partial_cut_length = module_body_size[0] - module_clamp_bolt_head_height - module_mount_edge_offset - METRIC_NUT_THICKNESS[module_clamp_bolt_size]/2 - tolerance/2 - 2*layer_height;
-                partial_cut_offset = nut_x_offset + METRIC_NUT_THICKNESS[module_clamp_bolt_size]/2 - partial_cut_length;
+                partial_cut_offset = nut_x_offset + METRIC_NUT_THICKNESS[module_clamp_bolt_size]/2 - partial_cut_length + 2*layer_height;
                 translate([0, y_offset, partial_cut_offset])
                 {
                     polyhole(partial_cut_length, module_clamp_bolt_size);
