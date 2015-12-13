@@ -61,12 +61,24 @@ module back_vents()
 {
 	carriage_mount_x = 40;
 	vent_x = (body_size[0] - 2*body_wall_thickness - carriage_mount_x)/2 - 2;
-	for(x=[-1:2:1])
+	rotate([90, 0, 0])
 	{
-		x_offset = (body_size[0]/2)-(vent_x/2)-body_wall_thickness;
-		translate([x*x_offset, 0, 0])
+		for(x=[-1:2:1])
 		{
-			cube([vent_x, body_wall_thickness+pf, body_size[2]-2*body_wall_thickness], center=true);
+			x_offset = (body_size[0]/2)-(vent_x/2)-body_wall_thickness;
+			y_offset = body_size[2]/2 - vent_x/2 - body_wall_thickness;
+			hull()
+			{
+				translate([x*x_offset, y_offset, 0])
+				{
+					cylinder(d=vent_x, h=body_wall_thickness+pf, center=true);
+				}
+				
+				translate([x*x_offset, -y_offset, 0])
+				{
+					cylinder(d=vent_x, h=body_wall_thickness+pf, center=true);
+				}
+			}
 		}
 	}
 }
@@ -144,10 +156,25 @@ module front_vents()
 {
 	
 	vent_x = module_body_size[0] - 2;
-	x_offset = (body_size[0]/2)-(vent_x/2)-body_wall_thickness;
-	translate([x_offset, 0, 0])
+	x_offset = (body_size[0]/2) - module_body_size[0] - body_wall_thickness;
+	y_offset = body_size[2]/2 - vent_x/2 - body_wall_thickness;
+	rotate([90, 0, 0])
 	{
-		cube([vent_x, body_wall_thickness+pf, body_size[2]-2*body_wall_thickness], center=true);
+		translate([x_offset, 0, 0])
+		{
+			hull()
+			{
+				translate([x_offset, y_offset, 0])
+				{
+					cylinder(d=vent_x, h=body_wall_thickness+pf, center=true);
+				}
+				
+				translate([x_offset, -y_offset, 0])
+				{
+					cylinder(d=vent_x, h=body_wall_thickness+pf, center=true);
+				}
+			}
+		}
 	}
 }
 
