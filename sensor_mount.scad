@@ -33,7 +33,7 @@ module sensor_cutout()
     {
         rotate([0, 0, 90])
         {
-            cylinder(h=sensor_nut_height, d=METRIC_NUT_AC_WIDTHS[16], $fn=6, center=true);
+            cylinder(h=sensor_nut_height, d=METRIC_NUT_AC_WIDTHS[16]+tolerance, $fn=6, center=true);
         }
     }
 }
