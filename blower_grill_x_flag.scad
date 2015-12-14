@@ -2,7 +2,7 @@ use <MCAD/polyholes.scad>
 include <config.scad>
 
 thickness = 1.5;
-flag_size = [1, 10, 10];
+flag_size = [1, 14, 10];
 flag_y_offset_from_x_carriage = 12.5;
 spines=10;
 spine_offset=6;
