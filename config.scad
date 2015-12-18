@@ -5,7 +5,7 @@ module_level_bolt_size = 4;
 module_level_spring_diameter = 8;
 module_level_bolt_spacing = module_body_size[1] - 2*module_mount_edge_offset;
 module_clamp_bolt_size = 4;
-module_clamp_bolt_head_height = 2.5;
+module_clamp_bolt_head_height = 3.5;
 
 // main body
 body_wall_thickness = 5;
