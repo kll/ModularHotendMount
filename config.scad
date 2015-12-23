@@ -9,7 +9,7 @@ module_clamp_bolt_head_height = 3.5;
 
 // main body
 body_wall_thickness = 5;
-body_size = [3*module_body_size[0]+2*body_wall_thickness+1, module_body_size[1]+2*body_wall_thickness+1, 55];
+body_size = [2*module_body_size[0]+2*body_wall_thickness+1, module_body_size[1]+2*body_wall_thickness+1, 55];
 carriage_mount_hole_spacing=22.5;	// i3 rework standard
 carriage_screw_size = 4;
 carriage_screw_head_height = 2.5;

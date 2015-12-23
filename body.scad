@@ -60,7 +60,7 @@ module carriage_mount_holes()
 module back_vents()
 {
 	carriage_mount_x = 40;
-	vent_x = (body_size[0] - 2*body_wall_thickness - carriage_mount_x)/2 - 2;
+	vent_x = (body_size[0] - 2*body_wall_thickness - carriage_mount_x)/2;
 	rotate([90, 0, 0])
 	{
 		for(x=[-1:2:1])
@@ -98,23 +98,13 @@ module top_cuts(inner_cut_size)
 	module_wire_holes();
 }
 
-module bottom_cuts(inner_cut_size)
-{
-	cut_size = [inner_cut_size[0], inner_cut_size[1], body_wall_thickness+2*body_chamfer+pf];
-	z_offset = ((body_size[2]+inner_cut_size[2])/2)/2;
-	translate([0, 0, -z_offset])
-	{
-		ccube(cut_size, body_chamfer, true);
-	}
-}
-
 module module_mount_holes()
 {
-	for (x=[-1:1])
+	for (x=[-1:2:1])
 	{
 		for (y=[-1:2:1])
 		{
-			x_offset = module_body_size[1]/2 * x;
+			x_offset = module_body_size[0]/2 * x;
 			y_offset = module_level_bolt_spacing/2 * y;
 			z_offset = body_size[2]/2 - module_body_size[2]/2 - pf/2;
 			translate([x_offset, y_offset, z_offset])
@@ -132,14 +122,10 @@ module module_mount_holes()
 
 module module_wire_holes()
 {
-	for (x=[-1:2:1])
+	z_offset = body_size[2]/2 + body_wall_thickness/2 - module_body_size[2]/2;
+	translate([0, 0, z_offset])
 	{
-		x_offset = module_body_size[0]/2 * x;
-		z_offset = body_size[2]/2 + body_wall_thickness/2 - module_body_size[2]/2;
-		translate([x_offset, 0, z_offset])
-		{
-			cube([module_body_size[0]/2, body_size[1] - 2*body_wall_thickness, body_wall_thickness + pf], true);
-		}
+		cube([module_body_size[0]/2, body_size[1] - 2*body_wall_thickness, body_wall_thickness + pf], true);
 	}
 }
 
@@ -147,60 +133,30 @@ module front_cuts()
 {
 	translate([0, -front_back_y_offset, 0])
 	{
-		front_fan_mount();
-		front_vents();
+		fan_mount();
 	}
 }
 
-module front_vents()
+module fan_mount()
 {
-	
-	vent_x = module_body_size[0] - 2;
-	x_offset = (body_size[0]/2) - module_body_size[0] - body_wall_thickness;
-	y_offset = body_size[2]/2 - vent_x/2 - body_wall_thickness;
 	rotate([90, 0, 0])
 	{
-		translate([x_offset, 0, 0])
+		cylinder(d1=45, d2=hotend_fan_output, h=body_wall_thickness+pf, center=true);
+		
+		for(r=[1:4])
 		{
-			hull()
+			rotate([0,0,r*90])
 			{
-				translate([x_offset, y_offset, 0])
+				translate([hotend_fan_screw_spacing/2, hotend_fan_screw_spacing/2,0])
 				{
-					cylinder(d=vent_x, h=body_wall_thickness+pf, center=true);
-				}
-				
-				translate([x_offset, -y_offset, 0])
-				{
-					cylinder(d=vent_x, h=body_wall_thickness+pf, center=true);
-				}
-			}
-		}
-	}
-}
-
-module front_fan_mount()
-{
-	translate([-module_body_size[0]/2, 0, 0])
-	{
-		rotate([90, 0, 0])
-		{
-			cylinder(d1=45, d2=hotend_fan_output, h=body_wall_thickness+pf, center=true);
-			
-			for(r=[1:4])
-			{
-				rotate([0,0,r*90])
-				{
-					translate([hotend_fan_screw_spacing/2, hotend_fan_screw_spacing/2,0])
+					translate([0, 0, -(body_wall_thickness+pf)/2])
 					{
-						translate([0, 0, -(body_wall_thickness+pf)/2])
-						{
-							polyhole(body_wall_thickness+pf, hotend_fan_screw_size);
-						}
-						
-						rotate([0, 0, 225])
-						{
-							nutTrap(hotend_fan_screw_size, hotend_fan_screw_spacing/2, tolerance);
-						}
+						polyhole(body_wall_thickness+pf, hotend_fan_screw_size);
+					}
+					
+					rotate([0, 0, 225])
+					{
+						nutTrap(hotend_fan_screw_size, hotend_fan_screw_spacing/2, tolerance);
 					}
 				}
 			}
@@ -214,45 +170,20 @@ module side_cuts()
 	{
 		translate([x*side_x_offset, 0, 0])
 		{
-			side_vents();
-			blower_mount();
+            rotate([0, 0, x*90])
+            {
+                fan_mount();
+            }
 		}
 	}
 }
 
-module side_vents()
+module bottom_cuts(inner_cut_size)
 {
-	vent_size = blower_screw_spacing + 2*blower_screw_size;
-	rotate([22.5, 0, 0])
+	cut_size = [inner_cut_size[0], inner_cut_size[1], body_wall_thickness+2*body_chamfer+pf];
+	z_offset = ((body_size[2]+inner_cut_size[2])/2)/2;
+	translate([0, 0, -z_offset])
 	{
-		rotate([0, 90, 0])
-		{
-			cylinder(d=vent_size, h=body_wall_thickness+pf, center=true, $fn=8);
-		}
-	}
-}
-
-module blower_mount()
-{
-	rotate([0, 90, 0])
-	{
-		for(r=[1:4])
-		{
-			rotate([0, 0, r*90])
-			{
-				translate([blower_screw_spacing/2, blower_screw_spacing/2, 0])
-				{
-					translate([0, 0, -(body_wall_thickness+pf)/2])
-					{
-						polyhole(body_wall_thickness+pf, blower_screw_size);
-					}
-					
-					rotate([0, 0, 225])
-					{
-						nutTrap(blower_screw_size, blower_screw_spacing/2, tolerance);
-					}
-				}
-			}
-		}
+		ccube(cut_size, body_chamfer, true);
 	}
 }

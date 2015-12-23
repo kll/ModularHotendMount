@@ -10,13 +10,15 @@ spine_offset=6;
 spine_rotation=0;
 size = blower_screw_spacing + blower_screw_size;
 
-flag_width = 12;
-flag_thickness = 1;
-flag_length = 40;
+sensor_diameter = 18.75;
+sensor_nut_height = 6;
+sensor_ledge_width = 32;
+sensor_ledge_thickness = 6;
+sensor_ledge_length = 40;
 
 exterior();
 interior();
-flag();
+sensor_ledge();
 
 module exterior()
 {
@@ -73,10 +75,45 @@ module interior()
 	}
 }
 
-module flag()
+module sensor_ledge()
 {
-	translate([0, 0, flag_width/2 - thickness/2])
+	translate([0, 0, sensor_ledge_width/2 - thickness/2])
 	{
-		cube([flag_length, flag_thickness, flag_width], true);
+		difference()
+		{
+			cube([sensor_ledge_length, sensor_ledge_thickness, sensor_ledge_width], true);
+			rotate([90, 0, 0])
+			{
+				sensor_cutout();
+			}
+			
+			// cut edges down to the thickness of a optical endstop flag
+			for(x=[-1:2:1])
+			{
+				for(y=[-1:2:1])
+				{
+					translate([x*(sensor_ledge_length/2 - 6/2 + pf), y*(3 - 1.25 + pf), thickness])
+					{
+						cube([6, 2.5, sensor_ledge_width], true);
+					}
+				}
+			}
+		}
 	}
+}
+
+module sensor_cutout()
+{
+    cut_size = sensor_ledge_thickness + pf;
+    translate([0, 0, -cut_size/2])
+    {
+        polyhole(cut_size, sensor_diameter);
+    }
+    
+    nut_offset = sensor_ledge_thickness/2 + pf;
+    translate([0, 0, nut_offset])
+    {
+        rotate([0, 0, 90])
+        cylinder(h=sensor_nut_height, d=METRIC_NUT_AC_WIDTHS[16]+3*tolerance, $fn=6, center=true);
+    }
 }
